@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    public static Player Instance;
+
     public Rigidbody rb;
 
     public float moveSpeed;
@@ -28,7 +30,13 @@ public class Player : MonoBehaviour
     public InputActionReference jump;
     public InputActionReference look;
     public InputActionReference fire;
+    public InputActionReference deadeye;
 
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,15 +51,19 @@ public class Player : MonoBehaviour
         _moveDirection = move.action.ReadValue<Vector3>();
         _lookInput = look.action.ReadValue<Vector2>();
 
-
-        Debug.Log(_lookInput);
-
         PlayerMovement();
         CameraMovement();
 
         if (fire.action.WasPressedThisFrame())
         {
             Shoot();
+        }
+
+        if (deadeye.action.WasPressedThisFrame())
+        {
+
+            GameManager.Instance.SlowEnemyTime();
+
         }
 
 
@@ -100,6 +112,21 @@ public class Player : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             targetPoint = hit.point;
+
+            if (hit.transform.CompareTag("Enemy"))
+            {
+                // kill enemy
+                Enemy enemy = hit.transform.GetComponent<Enemy>();
+
+                if (enemy != null)
+                {
+                    enemy.Death();
+                }
+
+
+
+            }
+
         }
         else
         {
@@ -110,11 +137,16 @@ public class Player : MonoBehaviour
         Vector3 shootDirection = (targetPoint - weaponTip.position).normalized;
         // create bullet from gun tip
         GameObject newBullet = Instantiate(bullet, weaponTip.position, 
-           Quaternion.LookRotation(shootDirection) * Quaternion.Euler(90f, 0f, 0f)); // also rotated 90 to look like a real bullet
+           Quaternion.LookRotation(shootDirection)); 
         // move bullet in direction created earlier
         newBullet.GetComponent<Rigidbody>().linearVelocity = shootDirection * bulletSpeed;
 
         //Instantiate(bullet);
+    }
+
+    public void TakeDamage()
+    {
+        Debug.Log("player taking damage!");
     }
 
 
