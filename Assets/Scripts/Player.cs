@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Camera camera;
     [SerializeField] private float bulletSpeed = 25f;
 
-
+    [SerializeField] private float health;
 
     public InputActionReference move;
     public InputActionReference jump;
@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -48,6 +49,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("player health: " + health);
+
         _moveDirection = move.action.ReadValue<Vector3>();
         _lookInput = look.action.ReadValue<Vector2>();
 
@@ -64,6 +67,12 @@ public class Player : MonoBehaviour
 
             GameManager.Instance.SlowEnemyTime();
 
+        }
+
+        if (health <= 0f)
+        {
+            //Debug.Log("health has reached 0!!!");
+            GameManager.Instance.GameOver();
         }
 
 
@@ -146,9 +155,14 @@ public class Player : MonoBehaviour
 
     public void TakeDamage()
     {
-        Debug.Log("player taking damage!");
+        //Debug.Log("player taking damage!");
+        health -= 5f;
     }
 
+    public float GetPlayerHealth()
+    {
+        return health;
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -157,5 +171,6 @@ public class Player : MonoBehaviour
             _isGrounded = true;
         }
     }
+
 
 }

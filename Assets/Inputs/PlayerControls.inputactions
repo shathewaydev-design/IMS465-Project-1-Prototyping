@@ -67,10 +67,10 @@
                 {
                     "name": "",
                     "id": "a285bd61-9728-46bd-ae2c-f1ad516818fb",
-                    "path": "",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";Keyboard + Mouse",
                     "action": "Fire",
                     "isComposite": false,
                     "isPartOfComposite": false

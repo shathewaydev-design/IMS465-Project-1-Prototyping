@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private float maxEnemyCount;
     private float enemyCount;
+    private int killCount = 0;
 
     [SerializeField] private Transform spawnLocation;
 
@@ -37,11 +39,42 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
-        Debug.Log(timer);
+        //Debug.Log(timer);
 
         spawnTimer -= Time.deltaTime;
         SpawnManager();
 
+        SlowTimeCooldownManager();
+
+        //if (timeSlowed)
+        //{
+        //    timer -= Time.unscaledDeltaTime;
+
+        //    if (timer <= 0)
+        //    {
+        //        Time.timeScale = 1f;
+        //        timeSlowed = false;
+
+        //        isOnCooldown = true;
+        //        timer = slowCooldown;
+        //    }
+
+        //}
+        //else if (isOnCooldown)
+        //{
+        //    timer -= Time.unscaledDeltaTime;
+            
+        //    if (timer <= 0)
+        //    {
+        //        isOnCooldown = false;
+        //    }
+
+        //}
+
+    }
+
+    private void SlowTimeCooldownManager()
+    {
         if (timeSlowed)
         {
             timer -= Time.unscaledDeltaTime;
@@ -59,14 +92,13 @@ public class GameManager : MonoBehaviour
         else if (isOnCooldown)
         {
             timer -= Time.unscaledDeltaTime;
-            
+
             if (timer <= 0)
             {
                 isOnCooldown = false;
             }
 
         }
-
     }
 
     public void SpawnManager()
@@ -116,11 +148,56 @@ public class GameManager : MonoBehaviour
         //Debug.Log("time slowed!");
     }
 
+    public void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void LoadMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
+    }
+
+    public void GameOver()
+    {
+        // fade to black, then fade in via ui/manager?
+        // restart scene
+        //RestartScene();
+        //Debug.Log("Game over!!!");
+        UIManager.Instance.GameOverFade();
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+        Player.Instance.enabled = false;
+        //RestartScene();
+
+    }
 
     public bool GetTimeSlowed()
     {
         return timeSlowed;
     }
+
+    public int GetKillCount()
+    {
+        return killCount;
+    }
+
+    public void IncreaseKillCount()
+    {
+        killCount++;
+    }
+
+    public float GetSlowTimer()
+    {
+        return timer;
+    }
+
+    public bool GetIsOnCoolDown()
+    {
+        return isOnCooldown;
+    }
+
+
 
 }
 

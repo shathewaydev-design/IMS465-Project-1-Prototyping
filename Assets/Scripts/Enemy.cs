@@ -40,6 +40,12 @@ public class Enemy : MonoBehaviour
     {
         attackTimer -= Time.deltaTime;
 
+        if (isDead)
+        {
+            agent.isStopped = true;
+            return;
+        }
+
         if (Vector3.Distance(transform.position, player.transform.position) <= attackDistance)
         {
             animator.SetBool("isRunning", false);
@@ -120,10 +126,17 @@ public class Enemy : MonoBehaviour
 
     public void Death()
     {
-        Debug.Log("Enemy has died!");
+        //Debug.Log("Enemy has died!");
+        if (isDead)
+            return;
+
         isDead = true;
+
         GameManager.Instance.DecreaseEnemyCount();
+        GameManager.Instance.IncreaseKillCount();
+
         animator.SetTrigger("Death");
+        
         Destroy(gameObject, 5f);
     }
 
