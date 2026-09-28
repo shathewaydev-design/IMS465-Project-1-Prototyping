@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -5,6 +6,10 @@ using UnityEngine.UIElements;
 public class Enemy : MonoBehaviour
 {
     public static Enemy Instance;
+
+    public static event Action<AudioSource> OnEnemyShoot;
+
+    public AudioSource enemyAudioSource;
 
     public Transform player;
     private NavMeshAgent agent;
@@ -19,6 +24,8 @@ public class Enemy : MonoBehaviour
     private float attackTimer = 5f;
 
     private bool isDead;
+
+    [SerializeField] private AudioClip gunShot;
 
 
     private void Awake()
@@ -115,6 +122,9 @@ public class Enemy : MonoBehaviour
 
     private void PullTrigger(Vector3 targetPoint)
     {
+        // play gun shot audio clip
+        OnEnemyShoot?.Invoke(enemyAudioSource);
+
         Vector3 shootDirection = (targetPoint - weaponTip.position).normalized;
         // create bullet from gun tip
         GameObject newBullet = Instantiate(bullet, weaponTip.position,

@@ -1,0 +1,5 @@
+I prototyped the mechanic of Dead Eye from Read Dead Redemption 2. I took the basic parts--slowing time, a player entity, and enemy entities--and programmed them into one Unity scene.
+
+I applied Delta Time in both player movement calculations and cooldown calculations, as well as used TimeScale to implement slowing time, which was the chunk of the Dead Eye replication. I also utilized a good amount of events rather than having my managers rely on each other as variables, which allowed me to add sound effects and update my UI much more easily.
+
+I didn't scope anything down, however, if I had more time I would figure out how to tag a number enemies before shooting them all in succession automatically, which is a higher level of Dead Eye from RDR2. Though I still believe I fully embodied the mechanic because the first level of Dead Eye in the game does not have that feature. 

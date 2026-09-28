@@ -1083,7 +1083,43 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: '--AUDIO--
+
+    Single Gunshot by LaurenPonder -- https://freesound.org/s/638892/
+    -- License: Attribution 4.0
+
+
+    MTracker HQ Sample.wav by BaDoink -- https://freesound.org/s/569627/
+    -- License: Creative Commons 0
+
+
+    --3D MODELS--
+
+    Human Character Dummy
+    by Kevin Iglesias -- License: Standard Unity Asset Store EULA
+
+
+    Free Pack
+    - Gun by PolyOne Studio -- License: Standard Unity Asset Store EULA
+
+
+    --GAME
+    DESIGN--
+
+    Sophia Hatheway
+
+
+    --SCRIPTING--
+
+    Sophia Hatheway
+
+
+    --INSPIRATION--
+
+    Rockstar''s
+    Read Dead Redemption 2 (Dead Eye)
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2438,7 +2474,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.299276, g: 0.3340374, b: 0.9811321, a: 0.84313726}
+  m_Color: {r: 0.299276, g: 0.3340374, b: 0.9811321, a: 0.9607843}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

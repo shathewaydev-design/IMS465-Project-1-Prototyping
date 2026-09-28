@@ -1,22 +1,29 @@
+using System;
+using System.Text;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static  GameManager Instance;
 
+    public static event Action OnTimeRestored;
+
     [SerializeField] private float spawnTimer;
-    [SerializeField] private float spawnCooldown;
+    private float spawnCooldown = 7f;
 
     [SerializeField] private float maxEnemyCount;
     private float enemyCount;
     private int killCount = 0;
 
-    [SerializeField] private Transform spawnLocation;
+    [SerializeField] private Transform spawnLocation1;
+    [SerializeField] private Transform spawnLocation2;
+    [SerializeField] private Transform spawnLocation3;
 
     public GameObject enemy;
 
-    [SerializeField] private float slowDuration = 10f;
+    [SerializeField] private float slowDuration = 20f;
     [SerializeField] private float slowCooldown = 30f;
     [SerializeField] private float slowTimeScale = 0.5f;
 
@@ -24,10 +31,15 @@ public class GameManager : MonoBehaviour
     private bool timeSlowed = false;
     private bool isOnCooldown = false;
 
+    public InputActionReference pause;
+    private bool isPaused = false;
+    [SerializeField] private GameObject PauseScreen;
+
 
     private void Awake()
     {
         Instance = this;
+        Time.timeScale = 1f;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,37 +51,48 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
-        //Debug.Log(timer);
+        Debug.Log(spawnTimer);
+
 
         spawnTimer -= Time.deltaTime;
         SpawnManager();
-
+        SpawnCooldownUpdate();
         SlowTimeCooldownManager();
 
-        //if (timeSlowed)
-        //{
-        //    timer -= Time.unscaledDeltaTime;
+        if (pause.action.WasPressedThisFrame())
+        {
+            PauseGame();
+        }
 
-        //    if (timer <= 0)
-        //    {
-        //        Time.timeScale = 1f;
-        //        timeSlowed = false;
 
-        //        isOnCooldown = true;
-        //        timer = slowCooldown;
-        //    }
+    }
 
-        //}
-        //else if (isOnCooldown)
-        //{
-        //    timer -= Time.unscaledDeltaTime;
-            
-        //    if (timer <= 0)
-        //    {
-        //        isOnCooldown = false;
-        //    }
+    public void PauseGame()
+    {
+        if (!isPaused)
+        {
+            isPaused = true;
+            Time.timeScale = 0f;
+            // pull up pause screen
+            PauseScreen.SetActive(true);
+            // give player cursor access
+            Player.Instance.enabled = false;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
 
-        //}
+        } 
+        else
+        {
+            isPaused = false;
+            Time.timeScale = 1f;
+            // close pause screen
+            PauseScreen.SetActive(false);
+            Player.Instance.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+        }
+
 
     }
 
@@ -83,6 +106,8 @@ public class GameManager : MonoBehaviour
             {
                 Time.timeScale = 1f;
                 timeSlowed = false;
+
+                OnTimeRestored?.Invoke();
 
                 isOnCooldown = true;
                 timer = slowCooldown;
@@ -111,11 +136,51 @@ public class GameManager : MonoBehaviour
 
         spawnTimer = spawnCooldown;
 
+        Transform spawnLocation;
+
+        int randomLocation = UnityEngine.Random.Range(0, 3);
+
+        if (randomLocation == 0)
+        {
+            spawnLocation = spawnLocation1;
+        }
+        else if (randomLocation == 1)
+        {
+            spawnLocation = spawnLocation2;
+        }
+        else
+        {
+            spawnLocation = spawnLocation3;
+        }
+
+
         GameObject newEnemy = Instantiate(enemy, spawnLocation.position, Quaternion.identity);
         enemyCount++;
-        Debug.Log("# of enemies: " + enemyCount);
+        //Debug.Log("# of enemies: " + enemyCount);
 
-        
+
+    }
+
+    private void SpawnCooldownUpdate()
+    {
+        if (killCount >= 10)
+        {
+            spawnCooldown = 5f;
+        } 
+        if (killCount >= 20)
+        {
+            spawnCooldown = 3f;
+        }
+        if (killCount >= 30)
+        {
+            spawnCooldown = 1.5f;
+        }
+        if (killCount >= 50)
+        {
+            spawnCooldown = 0.5f;
+        }
+
+
     }
 
     public void DecreaseEnemyCount()
@@ -134,18 +199,9 @@ public class GameManager : MonoBehaviour
             Time.timeScale = slowTimeScale;
             timer = slowDuration;
 
-            //Time.timeScale = 1f;
-            //timeSlowed = false;
-            //Debug.Log("time returned to normal!");
-            //return;
+
         }
 
-
-
-
-        //Time.timeScale = 0.5f;
-        //timeSlowed = true;
-        //Debug.Log("time slowed!");
     }
 
     public void RestartScene()

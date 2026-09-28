@@ -1,9 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
     public static Player Instance;
+
+    public static event Action<AudioSource> OnPlayerShoot;
+    public static event Action OnSlowTrigger;
+
+    public AudioSource playerAudioSource;
 
     public Rigidbody rb;
 
@@ -32,10 +38,11 @@ public class Player : MonoBehaviour
     public InputActionReference fire;
     public InputActionReference deadeye;
 
-
     private void Awake()
     {
         Instance = this;
+        moveSpeed = 2000f;
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -66,6 +73,7 @@ public class Player : MonoBehaviour
         {
 
             GameManager.Instance.SlowEnemyTime();
+            OnSlowTrigger?.Invoke();
 
         }
 
@@ -114,6 +122,9 @@ public class Player : MonoBehaviour
 
     private void Shoot()
     {
+        // play audio clip of gunshot
+        OnPlayerShoot?.Invoke(playerAudioSource);
+
         Ray ray = camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
         Vector3 targetPoint;
