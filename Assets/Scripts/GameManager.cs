@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -36,6 +38,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject PauseScreen;
 
 
+
     private void Awake()
     {
         Instance = this;
@@ -65,6 +68,20 @@ public class GameManager : MonoBehaviour
         }
 
 
+    }
+
+    public void EndSlowTimeEarly()
+    {
+        if (!timeSlowed)
+            return;
+
+        Time.timeScale = 1f;
+        timeSlowed = false;
+
+        OnTimeRestored?.Invoke();
+
+        isOnCooldown = true;
+        timer = slowCooldown;
     }
 
     public void PauseGame()
